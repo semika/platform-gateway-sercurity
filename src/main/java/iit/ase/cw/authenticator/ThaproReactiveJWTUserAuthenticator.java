@@ -58,7 +58,7 @@ public class ThaproReactiveJWTUserAuthenticator implements ThaproReactiveUserAut
             AuthenticationRequest authenticationRequest = jwtUtil.extractClientToken(jwt);
 
             //Load the user and role from the database.
-            ThaproUser thaproUser = thaproUserDetailsPopulateService.findByUsername(authenticationRequest);
+            ThaproUser thaproUser = thaproUserDetailsPopulateService.findByUsername(authenticationRequest.getUsername());
             if (thaproUser == null) {
                 throw new RuntimeException("Authentication error. Unable to find the user");
             }
@@ -74,7 +74,7 @@ public class ThaproReactiveJWTUserAuthenticator implements ThaproReactiveUserAut
                 .isAuthenticated(true)
                 .userSecret(thaproUser.getPassword()).build();
 
-            Authentication authentication1 = getAuthentication(thaproUser.getUserId(), thaproUser.getPassword());
+            //Authentication authentication1 = getAuthentication(thaproUser.getUserId(), thaproUser.getPassword());
             //populate security context holder
             //Authentication authenticated  = new UsernamePasswordAuthenticationToken(
             //    thaproUser.getUserId(), thaproUser.getPassword(), userDetails.getAuthorities());
@@ -86,7 +86,7 @@ public class ThaproReactiveJWTUserAuthenticator implements ThaproReactiveUserAut
                 httpHeaders.add(ThaproSecurityConstant.Header.THAPRO_AUTHENTICATED_HEADER, serverJwt);
             }));
 
-            return authentication1;
+            return authenticated;
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Authentication error. Unable to extract login credentials", e);

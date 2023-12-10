@@ -5,5 +5,5 @@ import iit.ase.cw.platform.common.security.model.ThaproUser;
 
 public interface ThaproUserDetailsPopulateService {
 
-     ThaproUser findByUsername(AuthenticationRequest username);
+     ThaproUser findByUsername(String username);
 }

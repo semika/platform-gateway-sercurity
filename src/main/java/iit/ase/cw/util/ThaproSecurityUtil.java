@@ -20,16 +20,9 @@ public final class ThaproSecurityUtil {
         return AuthenticationRequest.builder().username(props[0]).password(props[1]).build();
     }
 
-    public static String getRequestHeader(ServerWebExchange serverWebExchange, String headerName) {
-        List<String> authorizationHeaderList = serverWebExchange.getRequest().getHeaders().get(headerName);
-        if (authorizationHeaderList == null || authorizationHeaderList.isEmpty()) {
-            throw new ThaproAuthenticationException("Unable to find the header, " + headerName);
-        }
-        return authorizationHeaderList.get(0);
-    }
 
     public static String getBasicAuthHeader(ServerWebExchange serverWebExchange, String headerName) {
-        String basicAuthHeader = getRequestHeader(serverWebExchange,  headerName);
+        String basicAuthHeader = getRequestHeaderByName(serverWebExchange,  headerName);
         if (basicAuthHeader.startsWith("Basic ")) {
             return basicAuthHeader;
         } else {
@@ -38,12 +31,20 @@ public final class ThaproSecurityUtil {
     }
 
     public static String getBearerAuthHeader(ServerWebExchange serverWebExchange, String headerName) {
-        String bearerAuthHeader = getRequestHeader(serverWebExchange,  headerName);
+        String bearerAuthHeader = getRequestHeaderByName(serverWebExchange,  headerName);
         if (bearerAuthHeader.startsWith("Bearer ")) {
             return bearerAuthHeader.substring("Bearer ".length());
         } else {
             throw new ThaproAuthenticationException("Unable to find the bearer auth token, " + headerName);
         }
+    }
+
+    public static String getRequestHeaderByName(ServerWebExchange serverWebExchange, String headerName) {
+        List<String> authorizationHeaderList = serverWebExchange.getRequest().getHeaders().get(headerName);
+        if (authorizationHeaderList == null || authorizationHeaderList.isEmpty()) {
+            throw new ThaproAuthenticationException("Unable to find the header, " + headerName);
+        }
+        return authorizationHeaderList.get(0);
     }
 
 }

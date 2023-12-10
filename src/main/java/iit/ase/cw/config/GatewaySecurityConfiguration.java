@@ -34,7 +34,6 @@ public class GatewaySecurityConfiguration {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
                                                             GatewaySecurityFilter gatewaySecurityFilter) throws Exception {
-
         http.authorizeExchange(exchanges -> exchanges
                         .anyExchange().authenticated())
                 .csrf(csrfSpec -> csrfSpec.disable()) //Will appy CSRF filter
@@ -42,13 +41,6 @@ public class GatewaySecurityConfiguration {
                 .formLogin(formLoginSpec -> formLoginSpec.disable())
                 .addFilterBefore(gatewaySecurityFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         return http.build();
-
-        //GatewaySecurityFilter filter = new GatewaySecurityFilter(new ThaproJwtTokenHandler());
-//        http.authorizeHttpRequests((authz) -> authz
-//                        .anyRequest().authenticated())   // UsernamePasswordAuthenticationFilter
-//                .csrf((csrf) -> csrf.disable()) //CSRFFilter
-//                .addFilterBefore(gatewaySecurityFilter, UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
     }
 
     @Bean

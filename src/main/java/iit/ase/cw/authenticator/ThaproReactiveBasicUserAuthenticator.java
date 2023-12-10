@@ -8,11 +8,12 @@ import iit.ase.cw.platform.common.security.model.ThaproUser;
 import iit.ase.cw.service.ThaproUserDetailsPopulateService;
 import iit.ase.cw.util.ThaproJwtTokenHandler;
 import iit.ase.cw.util.ThaproSecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ServerWebExchange;
-
+@Slf4j
 public class ThaproReactiveBasicUserAuthenticator implements ThaproReactiveUserAuthenticator {
 
     private ThaproUserDetailsPopulateService thaproUserDetailsPopulateService;
@@ -27,11 +28,11 @@ public class ThaproReactiveBasicUserAuthenticator implements ThaproReactiveUserA
     public Authentication authenticate(ServerWebExchange serverWebExchange) {
         // Get authorization header and validate
         try {
-            Authentication authentication = handleAuthentication(serverWebExchange);
+            return handleAuthentication(serverWebExchange);
+        } catch (Exception e) {
+            log.error("Authentication failed", e);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(null, null);
             return authentication;
-        } catch (Exception exception) {
-            exception.printStackTrace(); //TODO replace with proper loggin mechenisum
-            return null; //Not security context is created. 401 will be returned
         }
     }
 
@@ -46,17 +47,14 @@ public class ThaproReactiveBasicUserAuthenticator implements ThaproReactiveUserA
         //Extract login credentials
         AuthenticationRequest authenticationRequest = ThaproSecurityUtil.extractUserCredentialFromBasicHeader(
             serverWebExchange, HttpHeaders.AUTHORIZATION);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-            authenticationRequest.getPassword());
-
         //Load the user and role from the database.
-        ThaproUser thaproUser = thaproUserDetailsPopulateService.findByUsername(authenticationRequest);
+        ThaproUser thaproUser = thaproUserDetailsPopulateService.findByUsername(authenticationRequest.getUsername());
         if (thaproUser == null) {
             throw new RuntimeException("Authentication error. Unable to find the user");
         }
 
         //validate password, check the user provided password against the database one.
-        Boolean isValidPassword = validatePassword(authentication.getCredentials().toString(), thaproUser.getPassword());
+        Boolean isValidPassword = validatePassword(authenticationRequest.getUsername(), thaproUser.getPassword());
         if (!isValidPassword) {
             throw new RuntimeException("Authentication error. Invalid login credentials");
         }
@@ -64,7 +62,8 @@ public class ThaproReactiveBasicUserAuthenticator implements ThaproReactiveUserA
         ThaproAuthentication authenticated = ThaproAuthentication.builder().
                 thaproUser(thaproUser)
                 .isAuthenticated(true)
-                .userSecret(thaproUser.getPassword()).build();
+                .userSecret(thaproUser.getPassword())
+                .build();
 
         //set JWT header for downstream services
         try {
