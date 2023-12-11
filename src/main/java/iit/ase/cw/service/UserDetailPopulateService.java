@@ -1,12 +1,6 @@
 package iit.ase.cw.service;
 
-import iit.ase.cw.platform.common.security.model.AuthenticationRequest;
 import iit.ase.cw.platform.common.security.model.ThaproUser;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-
-
 
 public class UserDetailPopulateService implements ThaproUserDetailsPopulateService {
     @Override

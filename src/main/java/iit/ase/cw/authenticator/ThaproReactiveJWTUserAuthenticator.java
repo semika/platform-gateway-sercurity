@@ -1,22 +1,19 @@
 package iit.ase.cw.authenticator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import iit.ase.cw.model.ThaproAuthentication;
 import iit.ase.cw.platform.common.security.constant.ThaproSecurityConstant;
 import iit.ase.cw.platform.common.security.model.AuthenticationRequest;
 import iit.ase.cw.platform.common.security.model.ThaproUser;
+import iit.ase.cw.security.common.model.ThaproAuthentication;
+import iit.ase.cw.security.common.util.ThaproJwtTokenHandler;
+import iit.ase.cw.security.common.util.ThaproSecurityUtil;
 import iit.ase.cw.service.ThaproUserDetailsPopulateService;
-import iit.ase.cw.util.ThaproJwtTokenHandler;
-import iit.ase.cw.util.ThaproSecurityUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -14,10 +14,10 @@ package iit.ase.cw.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import iit.ase.cw.authenticator.ThaproReactiveUserAuthenticator;
-import iit.ase.cw.model.ThaproAuthentication;
 import iit.ase.cw.platform.common.context.model.ThaproApplicationContext;
 import iit.ase.cw.platform.common.security.constant.ThaproSecurityConstant;
-import iit.ase.cw.util.ThaproJwtTokenHandler;
+import iit.ase.cw.security.common.model.ThaproAuthentication;
+import iit.ase.cw.security.common.util.ThaproJwtTokenHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
